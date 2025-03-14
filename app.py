@@ -1,6 +1,7 @@
-print("\nWelcome To Your Personal Library Manager!")
+print("\nWelcome To Your Personal Library Manager!")   
 
-books = books = [
+# books list
+books = [
     {
         "title": "Python Crash Course",
         "author": "Eric Matthes",
@@ -38,6 +39,7 @@ books = books = [
     }
 ]
 
+# menu options
 options = ["\n1. Add a book", "2. Remove a book", "3. Search for a book", "4. Display all books", "5. Display statistics", "6. Exit"]
 
 condition = True
@@ -52,79 +54,98 @@ while condition:
 
     user_input = input("\nEnter your choice:  ")
 
-    if user_input == "1" or user_input.lower() == "Add a book".lower():
-        user_title = input("Enter the book title: ")
-        user_author = input("Enter the author: ")
-        user_year = input("Enter the publication year: ")
-        user_genre = input("Enter the genre: ")
-        user_read = input("Have you read this book? (Read/Unread/Reading): ") 
+# add book
+    if user_input == "1" or user_input == "add a book":
+        user_title = input("\nEnter the book title: ").strip()
 
-        books.append(dict(title = user_title, author = user_author, publication_year = user_year, genre = user_genre, read_status = user_read))
-        print("Book added successfully!")
+        user_author = input("\nEnter the author: ").strip()
+        while user_author.isdigit():
+            print("Author name can't be a number. Please enter a valid name.")
+            user_author = input("\nEnter the author: ").strip()
 
-    elif user_input == "2" or user_input.lower() == "Remove a book".lower():
-        remove_book = input("Enter the book title: ")
-        found = True
+        user_year = input("\nEnter the publication year: ").strip()     
+        while user_year.isalpha():
+            print("Please enter year in digits.")
+            user_year = input("Enter the publication year: ").strip()
+
+        user_genre = input("\nEnter the genre: ").strip()
+
+        read_status = ['read', 'unread', 'reading']
+        user_read = input("\nHave you read this book? (Read/Unread/Reading): ").lower()
+        while user_read not in  read_status:
+            print("\nPlease enter one of this (Read or Unread or Reading).")
+            user_read = input("\nHave you read this book? (Read/Unread/Reading): ").lower()
+
+        books.append(dict(title = user_title, author = user_author, publication_year = int(user_year), genre = user_genre, read_status = user_read))
+        print(f"\nBook '{user_title}' added successfully!")
+
+# remove book
+    elif user_input == "2" or user_input == "remove a book":
+        remove_book = input("\nEnter the book title: ").strip().lower()
+        found = False
         for book in books[:]:
-            # title = book["title"]
-            if remove_book == book['title']:
-                # print(remove_book)
-                # print(title)
+            if remove_book == book['title'].lower():
                 books.remove(book)
-                print("Book removed successfully!")
+                print(f"Book '{remove_book.title()}' removed successfully!")
+                found = True
                 break
         if not found:
-            print("This book does not exist in your library.")
-                # break
+            print(f"The book '{remove_book}' does not exist in your library.")
 
-    elif user_input == "3" or user_input.lower() == "Search for a book".lower():
-        print("Search by:\n 1. Title\n 2. Author")
-        search_by = input("Enter your choice: ")
-        if search_by == "1" or search_by == "Title":
-            search_title = input("Enter the title: ")
+# search book         
+    elif user_input == "3" or user_input == "search for a book":
+        print("\nSearch by:\n 1. Title\n 2. Author")
+        search_by = input("\nEnter your choice: ").lower()
+
+        valid_choices = ['1', 'title', '2', 'author']
+
+        while search_by not in valid_choices:
+            print("Please search by valid choice.")
+            search_by = input("\nEnter your search: ").lower()
+
+        if search_by == "1" or search_by.lower() == "title":
+            search_title = input("\nEnter the title: ").lower()
+            found = False
             for book in books:
-                title = book["title"]
-                if search_title in title:
-                    print(f"Matching Books:\n {book['title']} by '{book['author']}' ({book['publication_year']}) - {book['genre']} - {book['read_status']}")
-                    # print(search_title)
-                    break
-                else:
-                    print("This book does not exist in your library.")
-                    # break
+                if search_title in book["title"].lower():
+                    print(f"\nMatching Books:\n {book['title']} by '{book['author']}' ({book['publication_year']}) - {book['genre']} - {book['read_status']}")
+                    found = True
+            if not found:
+                print(f"The book title '{search_title}' does not exist in your library.")
 
-        elif search_by == "2" or search_by == "Author":
-            search_author = input("Enter the author: ")
+        elif search_by == "2" or search_by == "author":
+            search_author = input("Enter the author: ").lower()
+            found = False
             for book in books:
-                author = book["author"]
-                if search_author in author:
-                    print(f"Matching Books:\n {book['title']} by '{book['author']}' ({book['publication_year']}) - {book['genre']} - {book['read_status']}")
-                    # print(search_author)
-                    break
-                else:
-                    print("This book does not exist in your library.")
-                    # break
-        else:
-            print("Please enter a valid search")
+                if search_author in book["author"].lower():
+                    print(f"\nMatching Books:\n {book['title']} by '{book['author']}' ({book['publication_year']}) - {book['genre']} - {book['read_status']}")
+                    found = True
+            if not found:
+                print(f"No book found by '{search_author}'.")
 
-    elif user_input == "4" or user_input.lower() == "Display all books".lower():
+# display all books
+    elif user_input == "4" or user_input == "display all books":
         if books:
-            print("Your Library:")
+            print("\nHere is Your Library:")
             for index, book in enumerate(books, start=1):
-                print(f"{index}. {book['title']} by '{book['author']}' ({book['publication_year']}) - {book['genre']} - {book['read_status']}")
+                print(f"\n{index}. {book['title']} by '{book['author']}' ({book['publication_year']}) - {book['genre']} - {book['read_status']}")
+        else:
+            print("Your library is empty.")
 
-    elif user_input == "5" or user_input.lower() == "Display statistics".lower():
+# display library stats
+    elif user_input == "5" or user_input == "display statistics":
         for book in books:
-            read_status = book['read_status']
-            if read_status == 'Read':
+            if book['read_status'].lower() == 'read':
                 score += 1
         percentage_read = (score / total) * 100
-        print(f"""Your Library Stats:
-    Total books: {len(books)}
-    Percentage read: {percentage_read}%""")
+        print(f"""\nYour Library Stats:\n
+Total books: {len(books)}
+Percentage read: {percentage_read:.2f}%""")
 
-    elif user_input == "6" or user_input.lower() == "Exit".lower():
+# exit
+    elif user_input == "6" or user_input == "exit":
+        print("\nThank You for using your Personal Library Manager!")
         condition = False
-        print("Goodbye!")
 
     else:
-        print("Please enter a valid choice.")
+        print("\nPlease enter a valid choice.")
